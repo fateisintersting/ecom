@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Cart</title>
+
+    <style>
+        /* Base styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        /* Cart items container */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        .remove-item {
+            color: #999;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            font-size: 18px;
+        }
+        
+        .remove-item:hover {
+            color: #c00;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .empty-cart p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .shop-now-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .shop-now-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .total-amount {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+        .checkout-form {
+            display: none;
+            /* Other styles */
+        }
+        
+        .checkout-form.show {
+            display: block;
+            /* Additional styles if needed */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <p id="back"><a href="/home"><i class="fa-solid fa-arrow-left"></i></a></p>
+    <h1>Cart</h1>
+    <% if (cartData.orders.length > 0) { %>
+        <table>
+            <tr>
+                <th>Remove</th>
+                <th>Product Image</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <!-- Add more headers as needed -->
+            </tr>
+            <% cartData.orders.forEach(item => { %>
+                <tr>
+                    <td>
+                        <form action="/remove" method="post" class="removeform">
+                            <input type="hidden" name="orderId" value="<%= item.order_id %>">
+                            <button type="submit" class="remove-item">&times;</button>
+                        </form>
+                    </td>
+                    <td><img src="<%= item.image %>" alt="<%= item.name %>" style="max-width: 100px;"></td>
+                    <td><%= item.name %></td>
+                    <td>$<%= item.price %></td>
+                    <td><%= item.quantity %></td>
+                    <td><form action="/place-order" method="post">
+                        <input type="hidden" name="productId" value="<%= item.product_id %>">
+                        <input type="hidden" name="productname" value="<%= item.name %>">
+                        <input type="hidden" name="quantity" value="<%= item.quantity %>">
+                        <button type="submit">Place Order</button>
+                    </form>
+                </td>
+                    <!-- Add more columns for additional item details -->
+                </tr>
+            <% }); %>
+        </table>
+        
+        <!-- Calculate total amount -->
+        <% let totalAmount = 0; %>
+        <% cartData.orders.forEach(item => { %>
+            <% totalAmount += item.price * item.quantity; %>
+        <% }); %>
+        <div class="total-amount">
+            Total: $<%= totalAmount.toFixed(2) %>
+        </div>
+        
+        
+    <% } else { %>
+        <div class="empty-cart">
+            <p>Your cart is empty. Go shopping now!</p>
+            <a href="/home" class="shop-now-btn">Shop Now</a>
+        </div>
+    <% } %>
+
+
+    
+</body> 
+</html>
